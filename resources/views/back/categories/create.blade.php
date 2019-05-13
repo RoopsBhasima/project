@@ -20,7 +20,7 @@
         </ul>
       </div><br />
     @endif
-      <form method="post" action="{{ route('cats.store') }}">
+      <form method="post" action="{{ route('cats.store') }}"enctype="multipart/form-data">
           <div class="form-group">
               @csrf
               <label for="name">Category Name:</label>
@@ -29,6 +29,10 @@
           <div class="form-group">
               <label for="description">Category Description :</label>
               <input type="text" class="form-control" name="description"/>
+          </div>
+          <div class="form-group">
+              <label for="image">Category Image :</label>
+              <input type="file" class="form-control" name="files"/>
           </div>
           <div class="form-group">
               <label for="status">Category Status:</label>

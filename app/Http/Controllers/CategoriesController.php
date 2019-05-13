@@ -38,14 +38,35 @@ class CategoriesController extends Controller
     {
         $request->validate([
             'name'=>'required|min: 5 characters',
-            'description'=> 'required|alpha',
-            'status' => 'required|integer'
+            'status' => 'required|integer',
+            'files' => 'required|image|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048'
           ]);
 
         $cats = new Categories([
             'name' => $request->get('name'),
             'description'=> $request->get('description'),
             'status'=> $request->get('status')
+          ]);
+          //Handle file upload
+          if($request->hasFile('files'))
+          {
+              //Get jst ext
+              $extension = $request->file('files')
+              ->getClientOriginalExtension();
+              //Filename to store
+              $fileNameToStore = time() . '.' . $extension;
+              //upload image
+              $file = $request->file('files');
+              $destinationPath = public_path('/uploads');
+              $file->move($destinationPath, $fileNameToStore)
+          }
+          else{
+              return redirect()->back()->withInput($request->input())->with('error','File Not Selected');
+          }
+          $cats=new Category([ 'name'=>$request->get('name'),//right side is table data name and left side is form name
+          'description'=>$request->get('description'),
+          'status'=>$request->get('status'),
+          'image'=>$fileNameToStore
           ]);
           $cats->save();
           return redirect('/cats')->with('success', 'Category has been added');
